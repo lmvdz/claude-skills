@@ -14,6 +14,22 @@ Distilled from Anthropic's write-up on making claude.ai 3x faster (Aug 2026): me
 | [`frame-budget`](skills/frame-budget/SKILL.md) | Jank: deterministic 120Hz frame stepping and attributed layout-shift telemetry |
 | [`perf-ratchet`](skills/perf-ratchet/SKILL.md) | Tighten-only CI budgets and feature-flag lifecycle |
 
+## Domain vocabulary
+
+| Skill | Purpose |
+|---|---|
+| [`domain-vocabulary`](skills/domain-vocabulary/SKILL.md) | Create practical, grouped vocabulary for any field, or adapt a supplied taxonomy/ontology while preserving identifiers, multilingual labels, and relationships |
+
+Inspired by the teaching structure of [Animation Vocabulary](https://animations.dev/vocabulary): useful categories, brief introductions, and concise explanations that help readers describe or request work precisely. Categories and terminology are derived from the target domain and grounded in its sources.
+
+```text
+/domain-vocabulary Create 40 cinematography terms for beginning filmmakers,
+grouped by practical purpose. Distinguish commonly confused concepts and
+cite primary sources.
+```
+
+The skill includes optional structured JSON and a Python 3 validator for content shape and preservation against a normalized source baseline. The validator does not check factual truth or perform RDF/OWL reasoning.
+
 ## Install
 
 Copy (or symlink) a skill folder into `~/.claude/skills/` (user-wide) or `.claude/skills/` (per project):
