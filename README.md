@@ -28,7 +28,9 @@ grouped by practical purpose. Distinguish commonly confused concepts and
 cite primary sources.
 ```
 
-The skill includes optional structured JSON and a Python 3 validator for content shape and preservation against a normalized source baseline. The validator does not check factual truth or perform RDF/OWL reasoning.
+For semantic anchors and reusable prompt terms, the optional [prompting mode](skills/domain-vocabulary/references/prompting.md) adds task-specific instructions, observable success checks, and model-evidence records. Definition grounding remains separate from behavioral evidence; standalone term use is untested unless relevant experiments support it. The mode also includes a comparison design for tasks alone, terms, definitions, operational contracts, and plain-language controls. Ordinary glossaries remain concise.
+
+The skill includes optional structured JSON and a Python 3 validator for content shape, prompting-record shape, and preservation against a normalized source baseline. The validator does not check factual truth, verify behavioral experiments, or perform RDF/OWL reasoning.
 
 ## Install
 

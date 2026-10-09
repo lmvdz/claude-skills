@@ -1,4 +1,4 @@
-"""Check content shape and normalized source preservation; no RDF/OWL reasoning."""
+"""Check content/prompting shape and source preservation; no semantic or behavioral validation."""
 
 import argparse
 import json
@@ -11,6 +11,51 @@ def _text(value):
 
 def _enum(value, options):
     return _text(value) and value in options
+
+
+def _text_list(value):
+    return isinstance(value, list) and bool(value) and all(_text(x) for x in value)
+
+
+def _validate_prompting(value, location):
+    errors = []
+    if not isinstance(value, dict):
+        return [f"{location} prompting must be an object"]
+    location = f"{location} prompting"
+    for key in ("sense", "version", "task", "definition_basis", "expansion"):
+        if not _text(value.get(key)):
+            errors.append(f"{location} needs {key}")
+    if not _text_list(value.get("success_checks")):
+        errors.append(f"{location} success_checks must be a nonempty array of text")
+    evidence = value.get("model_evidence")
+    if not isinstance(evidence, dict):
+        return [*errors, f"{location} needs model_evidence object"]
+    if not _enum(evidence.get("status"), {"untested", "tested"}):
+        errors.append(f"{location} model_evidence status must be untested or tested")
+    if not _text(evidence.get("applicability_note")):
+        errors.append(f"{location} model_evidence needs applicability_note")
+    records = evidence.get("records")
+    if not isinstance(records, list) or any(not isinstance(x, dict) for x in records):
+        return [*errors, f"{location} model_evidence records must be an array of objects"]
+    if evidence.get("status") == "untested" and records:
+        errors.append(f"{location} untested evidence must have no records")
+    if evidence.get("status") == "tested" and not records:
+        errors.append(f"{location} tested evidence needs at least one record")
+    for index, record in enumerate(records):
+        record_location = f"{location} evidence record {index}"
+        for key in ("model_id", "model_version", "date", "results", "record_locator"):
+            if not _text(record.get(key)):
+                errors.append(f"{record_location} needs {key}")
+        for key in ("tasks", "conditions"):
+            if not _text_list(record.get(key)):
+                errors.append(f"{record_location} {key} must be a nonempty array of text")
+        conditions = record.get("conditions")
+        if isinstance(conditions, list) and any(
+            not _enum(x, {"task_only", "term", "definition", "contract", "paraphrase"})
+            for x in conditions
+        ):
+            errors.append(f"{record_location} has an unknown condition")
+    return errors
 
 
 def _labels(term):
@@ -102,6 +147,8 @@ def validate(data, baseline=None):
             ):
                 errors.append(f"{location} displayed label is absent or hidden")
         check_sources(term, location)
+        if "prompting" in term:
+            errors.extend(_validate_prompting(term["prompting"], location))
     endpoints = set(indexed["terms"]) | set(indexed["external_terms"])
     edges = set()
     for relation in lists["relations"]:
@@ -194,7 +241,7 @@ def main():
         parser.exit(1, "\n".join(errors) + "\n")
     print(
         "Content structure and requested preservation checks passed; "
-        "factual accuracy was not checked."
+        "factual accuracy and model behavior were not checked."
     )
 
 

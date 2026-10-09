@@ -30,6 +30,12 @@ Use supplied authoritative material first. Verify niche, changing, disputed, or 
 
 See [references/editorial.md](references/editorial.md) for the analyzed reference pattern, definition repairs, and generation examples. Do not copy its domain-specific entries or promote the reference page's categories into mandatory slots.
 
+## Optional prompting mode
+
+When the user asks for semantic anchors, reusable prompt terms, operational expansions, or model-steering evaluation, read [references/prompting.md](references/prompting.md). Keep the ordinary vocabulary concise; add prompting records only for the requested terms and tasks. For a description-to-term request, select an established concept by its intended sense, explain the fit and any important mismatch, and provide a task-specific expansion rather than inventing a new canonical label.
+
+A source-grounded definition does not establish that a receiving model understands or applies the term. Keep definition grounding separate from behavioral evidence. Without relevant behavioral evidence, mark standalone term use as untested and provide explicit instructions and observable success checks. Familiarity, popularity, citation quality, and model confidence are not evidence of model support. An operational expansion reduces ambiguity but does not guarantee compliance.
+
 ## Deliver and check
 
 Default shape:
@@ -46,6 +52,6 @@ Default shape:
 
 Attach citations near source-dependent definitions or tightly bounded groups. Keep a short scope/version note when applicable. Cite the vocabulary-page inspiration only when discussing the method, not as evidence for a new domain's facts. Generate fresh prose; do not mechanically substitute domain nouns into copied sentences. Keep any established output template authoritative.
 
-For requested machine-readable content or an ontology-backed handoff, read [references/structured-output.md](references/structured-output.md). Validate its JSON with `python scripts/validate_vocabulary.py output.json`; a normalized ontology baseline can be passed with `--baseline baseline.json`. This checks structure and preservation, not truth or formal consistency.
+For requested machine-readable content or an ontology-backed handoff, read [references/structured-output.md](references/structured-output.md). Validate its JSON with `python scripts/validate_vocabulary.py output.json`; a normalized ontology baseline can be passed with `--baseline baseline.json`. This checks structure, optional prompting-record shape, and preservation, not truth, formal consistency, or model behavior.
 
 Before finishing, sample entries from different groups: can the intended reader recognize the concept, distinguish its nearest neighbor, and request an appropriate use? Check whether labels actually belong to this domain, group introductions fit their entries, claims retain their scope, and coverage matches the request. For ontology mode, also check the selected source concepts and asserted relationships against the original. Correct concrete failures rather than adding extra output to compensate.
