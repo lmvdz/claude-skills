@@ -32,6 +32,22 @@ For semantic anchors and reusable prompt terms, the optional [prompting mode](sk
 
 The skill includes optional structured JSON and a Python 3 validator for content shape, prompting-record shape, and preservation against a normalized source baseline. The validator does not check factual truth, verify behavioral experiments, or perform RDF/OWL reasoning.
 
+## Infinite canvas architecture
+
+| Skill | Purpose |
+|---|---|
+| [`infinite-canvas-architecture`](skills/infinite-canvas-architecture/SKILL.md) | Create, review, or evolve an inspectable architecture atlas connecting behavior, data, UML, interfaces, tradeoffs, and change consequences |
+
+Choose depth and breadth independently, then explore a new brief, supplied artifacts, or prior session context. The skill guides missing-information intake and keeps observed facts, proposed designs, assumptions, and validation evidence distinct.
+
+The bundled Python 3 renderer produces a self-contained HTML canvas, semantic JSON, and SVGs with pan/zoom, search, navigation, and contract inspection. It runs locally without a live backend. An optional Penpot import starter supports adaptation to an authorized native file.
+
+```text
+/infinite-canvas-architecture Map this project's architecture at
+implementation-ready depth with whole-system coverage. Trace contracts,
+failure behavior, ownership, and the consequences of likely changes.
+```
+
 ## Install
 
 Copy (or symlink) a skill folder into `~/.claude/skills/` (user-wide) or `.claude/skills/` (per project):

@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "appointment-example",
+  "title": "Appointment booking — example architecture",
+  "status": "Illustrative design; targets and hypotheses are unverified",
+  "sources": [{"id":"brief","label":"Illustrative appointment-system brief","note":"Example authored for skill testing; no production observation or benchmark."}],
+  "boards": [
+    {"id":"system","title":"System responsibilities","subtitle":"Logical boundaries may share a deployment; booking correctness is the central constraint.","source":"brief"},
+    {"id":"quality","title":"Quality, cause and change","subtitle":"Make targets falsifiable and compare a local fix with a shared-boundary repair.","source":"brief"}
+  ],
+  "nodes": [
+    {"id":"customer","board":"system","title":"Customer interface","concept":"customer-interface","status":"proposed","lines":["Show available slots and booking status","Retry a request with the same request key"],"invariants":["A timeout is an uncertain result, not proof of booking failure."]},
+    {"id":"booking","board":"system","title":"Booking boundary","concept":"booking-boundary","kind":"interface","status":"proposed sketch","lines":["reserve(slotId, requestKey) → receipt","Reject conflicting slot reservations"],"detail":"Keep admission and receipt behavior coherent so retry handling stays local.","invariants":["One active reservation per slot; one result per caller request key."]},
+    {"id":"ledger","board":"system","title":"Reservation ledger","concept":"reservation-ledger","kind":"store","status":"proposed","lines":["Atomic uniqueness of the occupied slot","Persist booking result and caller key"],"detail":"A relational transaction is a candidate mechanism; actual engine and isolation behavior need verification."},
+    {"id":"q-booking","board":"quality","title":"Booking quality scenario","concept":"booking-boundary","kind":"activity","status":"proposed target","lines":["Example workload: 100 concurrent clients","No double booking under contention","Choose latency/resource limits from measured baseline"],"detail":"Track success, conflict and timeout paths; include reads and cancellation in regression checks."},
+    {"id":"hypothesis","board":"quality","title":"Timeout mechanism","kind":"decision","status":"hypothesis","lines":["Shared write contention?","Competing explanation: slow network"],"detail":"Compare per-stage timings and lock waits against network delay; do not infer cause from one slow endpoint."},
+    {"id":"scope","board":"quality","title":"Smallest sufficient repair","kind":"activity","status":"candidate choices","lines":["Local query repair if one query is responsible","Shared ledger repair if multiple consumers contend","New service only for a demonstrated boundary need"]},
+    {"id":"change","board":"quality","title":"Likely change and understanding","kind":"activity","status":"validation plan","lines":["Add recurring appointments without leaking storage details","Have an unfamiliar developer trace a retry","Check unaffected search and cancellation paths"]}
+  ],
+  "edges": [
+    {"source":"customer","target":"booking","label":"request / receipt","note":"Authenticated caller identity and retry key must reach the booking boundary."},
+    {"source":"booking","target":"ledger","label":"reserve and record result"},
+    {"source":"q-booking","target":"hypothesis","label":"investigate missed target"},
+    {"source":"hypothesis","target":"scope","label":"evidence chooses scope"},
+    {"source":"scope","target":"change","label":"verify consequences"}
+  ]
+}
